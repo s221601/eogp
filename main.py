@@ -1,3 +1,8 @@
+# delete .venv folder if already exists
+# shift+command+p -> create new environment
+# pip install PySide6
+# pip install numpy
+
 import os
 from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QMessageBox
