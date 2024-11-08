@@ -1,4 +1,6 @@
 def main(cutting_list, storage):
+    import re
+
     # Find the indices of the columns that contain "Length" or "Amount" in cutting_list
     cutting_length_indices = []
     cutting_amount_indices = []
@@ -32,7 +34,20 @@ def main(cutting_list, storage):
 
     # Filter the storage to only include the relevant columns
     filtered_storage = [[row[i] for i in storage_relevant_indices] for row in storage]
-    print(filtered_cutting_list)
 
+    # Function to remove non-numeric characters and convert to number
+    def clean_and_convert(value):
+        cleaned_value = re.sub(r'\D', '', value)
+        if cleaned_value:
+            return int(cleaned_value) if cleaned_value.isdigit() else float(cleaned_value)
+        return 0  # Default value if cleaned_value is empty
+
+    # Remove text and convert to numbers in filtered_cutting_list
+    filtered_cutting_list = [[clean_and_convert(value) for value in row] for row in filtered_cutting_list]
+
+    # Remove text and convert to numbers in filtered_storage
+    filtered_storage = [[clean_and_convert(value) for value in row] for row in filtered_storage]
+
+    print(filtered_cutting_list)
 
     return filtered_cutting_list, filtered_storage
