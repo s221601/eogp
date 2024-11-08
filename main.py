@@ -56,12 +56,11 @@ class MainWindow(QWidget):
     def optimize(self):
         if hasattr(self, "loaded_cutting_list") and hasattr(self, "loaded_storage"):
             result = optimize.main(self.loaded_cutting_list, self.loaded_storage)
+            print(result)
             if result is not None:
-                self.optimized_cutting_list, self.optimized_storage = result
+                self.table = result
             else:
-                self.optimized_cutting_list = None
-                self.optimized_storage = None
-                self.optimization_failed()
+                self.table = None
         else:
             self.not_loaded()
 

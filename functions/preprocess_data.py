@@ -34,7 +34,7 @@ def main(cutting_list, storage):
 
     # Filter the storage to only include the relevant columns
     filtered_storage = [[row[i] for i in storage_relevant_indices] for row in storage]
-
+    
     # Function to remove non-numeric characters and convert to number
     def clean_and_convert(value):
         cleaned_value = re.sub(r'\D', '', value)
@@ -50,3 +50,4 @@ def main(cutting_list, storage):
     filtered_storage = [[clean_and_convert(value) for value in row] for row in filtered_storage]
     filtered_storage = [row for row in filtered_storage if any(value != 0 for value in row)]
     return filtered_cutting_list, filtered_storage
+
