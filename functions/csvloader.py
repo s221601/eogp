@@ -2,7 +2,7 @@ from PySide6.QtWidgets import QFileDialog, QTableWidget, QTableWidgetItem, QVBox
 import numpy as np
 
 class TableWindow(QWidget):
-    def __init__(self, data):
+    def __init__(self, data, headers=None):
         super().__init__()
         self.setWindowTitle("Data Table")
         self.setGeometry(100, 100, 600, 400)
@@ -12,17 +12,20 @@ class TableWindow(QWidget):
         layout.addWidget(self.table_widget)
         self.setLayout(layout)
 
-        self.populate_table(data)
+        self.populate_table(data, headers)
 
-    def populate_table(self, data):
+    def populate_table(self, data, headers=None):
         rows = len(data)
         cols = len(data[0]) if rows > 0 else 0
         self.table_widget.setRowCount(rows)
         self.table_widget.setColumnCount(cols)
 
+        if headers:
+            self.table_widget.setHorizontalHeaderLabels(headers)
+
         for row in range(rows):
             for col in range(cols):
-                self.table_widget.setItem(row, col, QTableWidgetItem(data[row][col]))
+                self.table_widget.setItem(row, col, QTableWidgetItem(str(data[row][col])))
 
 def load_cutting_list(parent):
     FileName = QFileDialog.getOpenFileName(

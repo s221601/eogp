@@ -23,22 +23,27 @@ class MainWindow(QWidget):
 
         layout = QVBoxLayout()  # Create a vertical box layout
 
-        loadcuttinglist = QPushButton("Load cutting list", self)  # Create a button with the label "Load cutting list"
-        loadcuttinglist.clicked.connect(self.load_cutting_list)  # Connect the button's click event to the load_cutting_list function
-        layout.addWidget(loadcuttinglist)  # Add the button to the layout
+        # Load cutting list button
+        loadcuttinglist = QPushButton("Load cutting list", self) 
+        loadcuttinglist.clicked.connect(self.load_cutting_list)  
+        layout.addWidget(loadcuttinglist)  
 
-        loadstorage = QPushButton("Load storage", self)  # Create a button with the label "Load storage"
-        loadstorage.clicked.connect(self.load_storage)  # Connect the button's click event to the load_storage function
+        # Load storage button
+        loadstorage = QPushButton("Load storage", self)
+        loadstorage.clicked.connect(self.load_storage)
         layout.addWidget(loadstorage)
 
+        # Optimize button
         optimize_button = QPushButton("Optimize", self)
         optimize_button.clicked.connect(self.optimize)
         layout.addWidget(optimize_button)
 
+        # Display cutting list
         displaycuttinglist = QPushButton("Display Cutting List", self)
-        displaycuttinglist.clicked.connect(self.display_cutting_list)  # Connect the button's click event to the display_cutting_list function
+        displaycuttinglist.clicked.connect(self.display_cutting_list)
         layout.addWidget(displaycuttinglist)
 
+        # Display storage
         displaystorage = QPushButton("Display Storage", self)
         displaystorage.clicked.connect(self.display_storage)
         layout.addWidget(displaystorage)
@@ -47,23 +52,33 @@ class MainWindow(QWidget):
         self.setLayout(layout)  # Set the layout for the main window
         self.show()  # Show the main window
 
+    # Load the cutting list from a file
     def load_cutting_list(self):
         csvloader.load_cutting_list(self)
 
+    # Load the storage from a file
     def load_storage(self):
         csvloader.load_storage(self)
 
+    # Optimize the cutting list
     def optimize(self):
         if hasattr(self, "loaded_cutting_list") and hasattr(self, "loaded_storage"):
             result = optimize.main(self.loaded_cutting_list, self.loaded_storage)
-            print(result)
             if result is not None:
                 self.table = result
+                self.display_result_table(self.table)
             else:
-                self.table = None
+                self.optimization_failed()
         else:
             self.not_loaded()
 
+    # Display the result table
+    def display_result_table(self, table_data):
+        headers = ["Storage Length", "Usage Count", "Cut Size", "Remaining Length", "Cumulative Waste"]
+        self.table_window = TableWindow(table_data, headers)
+        self.table_window.show()
+
+    # Display cutting list input
     def display_cutting_list(self):
         if hasattr(self, "loaded_cutting_list"):
             self.table_window = TableWindow(self.loaded_cutting_list)
@@ -71,6 +86,7 @@ class MainWindow(QWidget):
         else:
             self.not_loaded()
 
+    # Display storage input
     def display_storage(self):
         if hasattr(self, "loaded_storage"):
             self.table_window = TableWindow(self.loaded_storage)
@@ -78,20 +94,7 @@ class MainWindow(QWidget):
         else:
             self.not_loaded()
 
-    def display_optimized_cutting_list(self):
-        if hasattr(self, "optimized_cutting_list") and self.optimized_cutting_list is not None:
-            self.table_window = TableWindow(self.optimized_cutting_list)
-            self.table_window.show()
-        else:
-            self.not_loaded()
-
-    def display_optimized_storage(self):
-        if hasattr(self, "optimized_storage") and self.optimized_storage is not None:
-            self.table_window = TableWindow(self.optimized_storage)
-            self.table_window.show()
-        else:
-            self.not_loaded()
-
+    # Error message for data not loaded
     def not_loaded(self):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Icon.Warning)
@@ -99,6 +102,7 @@ class MainWindow(QWidget):
         msg.setWindowTitle("Warning")
         msg.exec()
 
+    # Error message for optimization failure
     def optimization_failed(self):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Icon.Warning)

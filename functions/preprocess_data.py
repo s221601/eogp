@@ -49,5 +49,7 @@ def main(cutting_list, storage):
     # Remove text, convert to numbers, and filter out zeros in filtered_storage
     filtered_storage = [[clean_and_convert(value) for value in row] for row in filtered_storage]
     filtered_storage = [row for row in filtered_storage if any(value != 0 for value in row)]
+    
+
     return filtered_cutting_list, filtered_storage
 
